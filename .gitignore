@@ -187,21 +187,6 @@ psd
 thumb
 sketch
 
-### Web ###
-*.asp
-*.cer
-*.csr
-*.css
-*.htm
-*.html
-*.js
-*.jsp
-*.php
-*.rss
-*.wasm
-*.wat
-*.xhtml
-
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
