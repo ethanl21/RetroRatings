@@ -31,8 +31,8 @@ export const Auth = () => {
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
+    //watch,
+    //formState: { errors },
   } = useForm<BasicEmailFormInput>();
   const onBasicLoginFormSubmit: SubmitHandler<BasicEmailFormInput> = async (
     data
@@ -119,10 +119,10 @@ export const Auth = () => {
               </InputGroup>
             </Form.Group>
 
-            <div  className="d-flex justify-content-end">
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
+            <div className="d-flex justify-content-end">
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
             </div>
           </Form>
           <hr />
