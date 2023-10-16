@@ -2,6 +2,8 @@ import { useState } from "react";
 import { auth, googleProvider, githubProvider } from "../config/firebase";
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  //fetchSignInMethodsForEmail, // todo: validate email does not exist
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -15,13 +17,14 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 import {
-  BsGoogle,
   BsGithub,
   BsEyeFill,
   BsEyeSlashFill,
   BsPersonFill,
   BsLockFill,
 } from "react-icons/bs";
+import { FcGoogle } from "react-icons/fc";
+import { FirebaseError } from "firebase/app";
 
 type BasicEmailFormInput = {
   email: string;
@@ -38,9 +41,24 @@ export const Auth = () => {
     data
   ) => {
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      if (actionType === "signup") {
+        await createUserWithEmailAndPassword(auth, data.email, data.password);
+      } else if (actionType === "signin") {
+        await signInWithEmailAndPassword(auth, data.email, data.password);
+      }
     } catch (err) {
       console.error(err);
+
+      if (err instanceof FirebaseError) {
+        switch (err.code) {
+          case "auth/email-already-in-use":
+            alert("There is already an account with that email address.");
+            break;
+          case "auth/invalid-login-credentials":
+            alert("Incorrect email or password.");
+            break;
+        }
+      }
     }
   };
 
@@ -62,19 +80,20 @@ export const Auth = () => {
 
   const logoutUser = async () => {
     try {
-      signOut(auth);
+      await signOut(auth);
     } catch (err) {
       console.error(err);
     }
   };
 
   const [showPassword, setShowPassword] = useState(false);
+  const [actionType, setActionType] = useState("signup");
 
   return (
     <>
       <Card className="w-25">
         <Card.Body>
-          <Card.Title>Sign Up</Card.Title>
+          <Card.Title>Sign {actionType === "signup" ? "Up" : "In"}</Card.Title>
           <hr />
           <Form
             onSubmit={handleSubmit(onBasicLoginFormSubmit)}
@@ -125,20 +144,50 @@ export const Auth = () => {
               </Button>
             </div>
           </Form>
-          <hr />
-          <Stack gap={1}>
-            <Button onClick={signInWithGoogle}>
-              <BsGoogle /> Sign In With Google
+          <div className="row">
+            <div className="col">
+              <hr />
+            </div>
+            <div className="col-auto">or</div>
+            <div className="col">
+              <hr />
+            </div>
+          </div>
+          <Stack
+            gap={3}
+            direction="horizontal"
+            className="d-flex justify-content-center my-3"
+          >
+            <Button
+              className="flex-grow-1"
+              variant="outline-secondary"
+              onClick={signInWithGoogle}
+              style={{ background: "white", color: "#757575" }}
+            >
+              <FcGoogle />
             </Button>
-            <Button onClick={signInWithGitHub}>
-              <BsGithub /> Sign In With GitHub
+            <Button
+              className="flex-grow-1"
+              onClick={signInWithGitHub}
+              style={{ background: "#333333" }}
+            >
+              <BsGithub />
             </Button>
           </Stack>
         </Card.Body>
       </Card>
 
       <div className="mt-5">
-        <p>(for testing auth)</p>
+        <p>(for testing)</p>
+        <Button
+          onClick={() => {
+            actionType === "signup"
+              ? setActionType("signin")
+              : setActionType("signup");
+          }}
+        >
+          Toggle Form Type
+        </Button>
         <Button onClick={logoutUser}>Sign Out</Button>
       </div>
     </>
