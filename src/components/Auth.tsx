@@ -137,12 +137,18 @@ export const Auth = () => {
                 </ToggleButton>
               </InputGroup>
             </Form.Group>
-
-            <div className="d-flex justify-content-end">
+            <Stack
+              direction="horizontal"
+              gap={3}
+              className="d-flex justify-content-end"
+            >
+              <Button variant="outline-danger" type="reset">
+                Reset
+              </Button>
               <Button variant="primary" type="submit">
                 Submit
               </Button>
-            </div>
+            </Stack>
           </Form>
           <div className="row">
             <div className="col">
