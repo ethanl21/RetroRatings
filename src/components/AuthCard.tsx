@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { PropsWithChildren, useState } from "react";
 import { auth, googleProvider, githubProvider } from "../config/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   //fetchSignInMethodsForEmail, // todo: validate email does not exist
   signInWithPopup,
-  signOut,
 } from "firebase/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -30,10 +29,15 @@ type BasicEmailFormInput = {
   email: string;
   password: string;
 };
-export const Auth = () => {
+
+interface AuthProps extends PropsWithChildren {
+  actionType: "signup" | "signin";
+}
+export const AuthCard = ({ ...props }: AuthProps) => {
   const {
     register,
     handleSubmit,
+    reset,
     //watch,
     //formState: { errors },
   } = useForm<BasicEmailFormInput>();
@@ -41,11 +45,13 @@ export const Auth = () => {
     data
   ) => {
     try {
-      if (actionType === "signup") {
+      if (props.actionType === "signup") {
         await createUserWithEmailAndPassword(auth, data.email, data.password);
-      } else if (actionType === "signin") {
+      } else if (props.actionType === "signin") {
         await signInWithEmailAndPassword(auth, data.email, data.password);
       }
+
+      reset();
     } catch (err) {
       console.error(err);
 
@@ -78,22 +84,15 @@ export const Auth = () => {
     }
   };
 
-  const logoutUser = async () => {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const [showPassword, setShowPassword] = useState(false);
-  const [actionType, setActionType] = useState("signup");
 
   return (
     <>
       <Card className="w-25">
         <Card.Body>
-          <Card.Title>Sign {actionType === "signup" ? "Up" : "In"}</Card.Title>
+          <Card.Title>
+            Sign {props.actionType === "signup" ? "Up" : "In"}
+          </Card.Title>
           <hr />
           <Form
             onSubmit={handleSubmit(onBasicLoginFormSubmit)}
@@ -142,9 +141,6 @@ export const Auth = () => {
               gap={3}
               className="d-flex justify-content-end"
             >
-              <Button variant="outline-danger" type="reset">
-                Reset
-              </Button>
               <Button variant="primary" type="submit">
                 Submit
               </Button>
@@ -182,20 +178,6 @@ export const Auth = () => {
           </Stack>
         </Card.Body>
       </Card>
-
-      <div className="mt-5">
-        <p>(for testing)</p>
-        <Button
-          onClick={() => {
-            actionType === "signup"
-              ? setActionType("signin")
-              : setActionType("signup");
-          }}
-        >
-          Toggle Form Type
-        </Button>
-        <Button onClick={logoutUser}>Sign Out</Button>
-      </div>
     </>
   );
 };
