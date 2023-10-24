@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel = "stylesheet" href = "indexStyle.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
- 
+    <title>Retro Image Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
+    <header>
+        <h1>Retro Image Gallery</h1>
+    </header>
+     <div class="container">
         <div class="imgcontainer">
         <img class ="image" src ="" alt = "">
     </div>
@@ -18,12 +22,24 @@
    
 
     </div>
-    <!-- This is where we would put the rating system -->
-    <button onclick="setRandomImage()">Load Random Image</button>
+   <div class ="Rate-system">
+    <div class="star-rating">
+        <span class="star"   data-star="1">&#9733;</span>
+        <span class="star"  data-star="2">&#9733;</span>
+        <span class="star" data-star="3">&#9733;</span>
+        <span class="star"  data-star="4">&#9733;</span>
+        <span class="star"  data-star="5">&#9733;</span>
+    </div>
+    <div class="nxtBtn">
+    <button class="next-button" onclick="prevButton()">  Prev &rarr;</button>
+</div>
+</div>
 
 
-
+    
+    <footer>
+        &copy; 2023 Retro Image Gallery
+    </footer>
     <script src= "app.js"></script>
-
 </body>
 </html>
