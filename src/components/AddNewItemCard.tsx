@@ -5,22 +5,35 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Stack from "react-bootstrap/Stack";
 import DOMPurify from "dompurify";
 
-// Type of the object created when submitting the form
+/**
+ * Type of the object that is created when the form is submitted
+ */
 type AddNewItemFormInput = {
   itemName: string;
   description: string;
   image: FileList;
 };
 
+/**
+ * Type of the callback function that will be called with the form's data on submit
+ */
 type OnFormSubmitHandlerType = (
   item: string,
   description: string,
   image: string
 ) => undefined;
+
+/**
+ * Prop type for the AddNewItemCard component
+ */
 interface AddNewItemCardProps {
   OnFormSubmit?: OnFormSubmitHandlerType;
 }
 
+/**
+ * @brief Component used to add new items to rate to the database
+ * @param props submit handler used to add items to the database
+ */
 export const AddNewItemCard = (props: AddNewItemCardProps) => {
   // Hook used to handle form submit
   const {
@@ -35,6 +48,7 @@ export const AddNewItemCard = (props: AddNewItemCardProps) => {
   const onAddNewItemFormSubmit: SubmitHandler<AddNewItemFormInput> = async (
     data
   ) => {
+    // temp: for debug
     console.log(data);
 
     // call the callback handler from props if it exists
