@@ -1,9 +1,12 @@
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useForm, SubmitHandler } from "react-hook-form";
+import Modal from "react-bootstrap/Modal";
 import Stack from "react-bootstrap/Stack";
+import { useForm, SubmitHandler } from "react-hook-form";
 import DOMPurify from "dompurify";
+import { useState } from "react";
+import { FirebaseError } from "firebase/app";
 
 /**
  * Type of the object that is created when the form is submitted
@@ -20,8 +23,8 @@ type AddNewItemFormInput = {
 type OnFormSubmitHandlerType = (
   item: string,
   description: string,
-  image: string
-) => undefined;
+  image: File
+) => Promise<void | FirebaseError>;
 
 /**
  * Prop type for the AddNewItemCard component
@@ -48,65 +51,105 @@ export const AddNewItemCard = (props: AddNewItemCardProps) => {
   const onAddNewItemFormSubmit: SubmitHandler<AddNewItemFormInput> = async (
     data
   ) => {
-    // temp: for debug
-    console.log(data);
-
     // call the callback handler from props if it exists
-    // todo: idk what type the image is supposed to be
     if (props.OnFormSubmit) {
-      props.OnFormSubmit(
-        DOMPurify.sanitize(data.itemName),
-        DOMPurify.sanitize(data.description),
-        await data.image[0].text()
-      );
+      props
+        .OnFormSubmit(
+          DOMPurify.sanitize(data.itemName),
+          DOMPurify.sanitize(data.description),
+          data.image[0]
+        )
+        .then(() => {
+          setModalHeader("Success");
+          setModalText("Item added successfully!");
+          setShowModal(true);
+        })
+        .catch((err) => {
+          setModalHeader("Error");
+          switch (err.code) {
+            case "permission-denied":
+              setModalText("Error: Only logged in users can add items!");
+              break;
+            default:
+              setModalText(JSON.stringify(err));
+              break;
+          }
+
+          setShowModal(true);
+        });
     }
   };
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalText, setModalText] = useState("");
+  const [modalHeader, setModalHeader] = useState("");
+
   return (
-    <Card className="w-50">
-      <Card.Body>
-        <Card.Title>Add New Item</Card.Title>
-        <hr />
-        <Form onSubmit={handleSubmit(onAddNewItemFormSubmit)} className="mb-2">
-          <Form.Group controlId="name-input-group" className="mb-3">
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              required
-              placeholder="Item name"
-              {...register("itemName", {})}
-            />
-          </Form.Group>
+    <>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modalHeader}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{modalText}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
-          <Form.Group controlId="desc-input-group" className="mb-3">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              required
-              as="textarea"
-              rows={5}
-              {...register("description", {})}
-            />
-          </Form.Group>
+      <Card className="w-50">
+        <Card.Body>
+          <Card.Title>Add New Item</Card.Title>
+          <hr />
+          <Form
+            onSubmit={handleSubmit(onAddNewItemFormSubmit)}
+            className="mb-2"
+          >
+            <Form.Group controlId="name-input-group" className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                required
+                placeholder="Item name"
+                {...register("itemName", {})}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="image-upload-group" className="mb-3">
-            <Form.Label>Image</Form.Label>
-            <Form.Control
-              required
-              type="file"
-              accept="image/*"
-              {...register("image")}
-            ></Form.Control>
-          </Form.Group>
+            <Form.Group controlId="desc-input-group" className="mb-3">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                required
+                as="textarea"
+                rows={5}
+                {...register("description", {})}
+              />
+            </Form.Group>
 
-          <Stack direction="horizontal" gap={3} className="justify-content-end">
-            <Button variant="danger" type="reset">
-              Reset
-            </Button>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Stack>
-        </Form>
-      </Card.Body>
-    </Card>
+            <Form.Group controlId="image-upload-group" className="mb-3">
+              <Form.Label>Image</Form.Label>
+              <Form.Control
+                required
+                type="file"
+                accept="image/*"
+                {...register("image")}
+              ></Form.Control>
+            </Form.Group>
+
+            <Stack
+              direction="horizontal"
+              gap={3}
+              className="justify-content-end"
+            >
+              <Button variant="danger" type="reset">
+                Reset
+              </Button>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Stack>
+          </Form>
+        </Card.Body>
+      </Card>
+    </>
   );
 };
