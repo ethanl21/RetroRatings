@@ -43,43 +43,39 @@ function App() {
             </Button>
 
             <Modal show={showModal} onHide={closeModal}>
-              <Modal.Dialog>
-                <Modal.Header closeButton>
-                  <Modal.Title>Login Modal</Modal.Title>
-                </Modal.Header>
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  {authActionType === "signup" ? "Sign Up" : "Sign In"}
+                </Modal.Title>
+              </Modal.Header>
 
-                <Modal.Body>
-                  <AuthCard actionType={authActionType} />
-                </Modal.Body>
+              <Modal.Body>
+                <AuthCard actionType={authActionType} noBorder={true}/>
+              </Modal.Body>
 
-                <Modal.Footer>
-                  <Button
-                    onClick={() => {
-                      authActionType === "signup"
-                        ? setAuthActionType("signin")
-                        : setAuthActionType("signup");
-                    }}
-                  >
-                    Toggle Form Type
-                  </Button>
-                  <Button onClick={logoutUser}>Sign Out</Button>
-                  <Button
-                    onClick={() =>
-                      alert(
-                        auth.currentUser?.email
-                          ? auth.currentUser?.email
-                          : "You're not logged in!"
-                      )
-                    }
-                  >
-                    Who am I?
-                  </Button>
-                  <Button variant="secondary" onClick={closeModal}>
-                    Close
-                  </Button>
-
-                </Modal.Footer>
-              </Modal.Dialog>
+              <Modal.Footer>
+                <Button
+                  onClick={() => {
+                    authActionType === "signup"
+                      ? setAuthActionType("signin")
+                      : setAuthActionType("signup");
+                  }}
+                >
+                  Toggle Form Type
+                </Button>
+                <Button onClick={logoutUser}>Sign Out</Button>
+                <Button
+                  onClick={() =>
+                    alert(
+                      auth.currentUser?.email
+                        ? auth.currentUser?.email
+                        : "You're not logged in!"
+                    )
+                  }
+                >
+                  Who am I?
+                </Button>
+              </Modal.Footer>
             </Modal>
           </>
         </Tab>
