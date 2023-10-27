@@ -2,8 +2,8 @@ import { useState } from "react";
 import { signOut } from "firebase/auth";
 import { AuthCard } from "./components/AuthCard";
 import { auth } from "./config/firebase";
-import { AddNewItemCard } from "./components/AddNewItemCard";
-import { addRatingItem } from "./tasks/addItem";
+// import { AddNewItemCard } from "./components/AddNewItemCard";
+// import { addRatingItem } from "./tasks/addItem";
 
 import Button from "react-bootstrap/Button";
 // import Stack from "react-bootstrap/Stack"; // Not used
@@ -52,7 +52,7 @@ function App() {
               </Modal.Header>
 
               <Modal.Body>
-                <AuthCard actionType={authActionType} noBorder={true}/>
+                <AuthCard actionType={authActionType} noBorder={true} />
               </Modal.Body>
 
               <Modal.Footer>
