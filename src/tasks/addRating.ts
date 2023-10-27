@@ -1,6 +1,12 @@
 import { auth, db } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
 
+/**
+ * @brief Adds a rating to the database
+ * @param ratingItemId ID of the item to rate
+ * @param ratingValue The user's selected rating
+ * @returns Promise, undefined or error
+ */
 export const addRating = async (ratingItemId: string, ratingValue: number) => {
   try {
     if (!auth.currentUser) {
@@ -11,9 +17,9 @@ export const addRating = async (ratingItemId: string, ratingValue: number) => {
 
     const ratingMap = new Map();
     ratingMap.set(ratingItemId, ratingValue);
-    const newRatingData =  Object.fromEntries(ratingMap);
+    const newRatingData = Object.fromEntries(ratingMap);
 
-    await setDoc(userRatingsRef, newRatingData, {merge: true});
+    await setDoc(userRatingsRef, newRatingData, { merge: true });
 
     return Promise.resolve();
   } catch (err) {
