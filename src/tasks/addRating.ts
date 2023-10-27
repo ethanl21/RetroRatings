@@ -11,13 +11,12 @@ export const addRating = async (ratingItemId: string, ratingValue: number) => {
 
     const ratingMap = new Map();
     ratingMap.set(ratingItemId, ratingValue);
-    const newRatingData = {
-      ratingValues: Object.fromEntries(ratingMap),
-    };
+    const newRatingData =  Object.fromEntries(ratingMap);
 
-    await setDoc(userRatingsRef, newRatingData, { merge: true });
+    await setDoc(userRatingsRef, newRatingData, {merge: true});
+
     return Promise.resolve();
   } catch (err) {
-    console.log(err);
+    return Promise.reject(err);
   }
 };

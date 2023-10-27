@@ -10,7 +10,7 @@ export const getRatingItems = async (count: number) => {
     const q = query(collection(db, "rating-items"), limit(count));
 
     const querySnapshot = await getDocs(q);
-    
+
     const returnedRatingItems = new Map();
     querySnapshot.forEach((doc) => {
         returnedRatingItems.set(doc.id, doc.data());
@@ -18,6 +18,6 @@ export const getRatingItems = async (count: number) => {
 
     return Promise.resolve(Object.fromEntries(returnedRatingItems));
   } catch (err) {
-    console.log(err);
+    return Promise.reject(err);
   }
 };
