@@ -18,39 +18,40 @@ The `rating-items` collection is a list of key-value pairs describing each item 
 
 ### Reading
 
-(todo)
+To read items from the database, you must be logged in. As a logged on user, execute the following:
+
+```ts
+import { getRatingItems } from "./tasks/getRatingItems"; // replace with the path to getRatingItems.ts relative to the current file
+
+const itemsToReturn = 10; // don't try to read all the items, since there may be a large amount
+
+getRatingItems(itemsToReturn)
+  .then((returnedItems) => {
+    // will return an object of the rating items
+  })
+  .catch((err) => {
+    // handle the error here
+  });
+```
 
 ### Writing
 
 To add a new item to the database, you must be logged in. As a logged in user, execute the following:
 
 ```ts
-import { addRatingItem } from "./tasks/addItem"; // replace with the path to addItem.tsx relative to the current file
+import { addRatingItem } from "./tasks/addItem"; // replace with the path to addItem.ts relative to the current file
 
 const itemName = "my new item";
 const itemDescription = "this is a sample item!";
 // const image = <some file object>;
 
-try {
-  await addRatingItem(itemName, itemDescription, image);
-} catch (err) {
-  // handle the error here
-}
-```
-
-To read items from the database, you must be logged in. As a logged on user, execute the following:
-```ts
-import { getRatingItems } from "./tasks/getRatingItems"; // replace with the path to getRatingItems.tsx relative to the current file
-
-const itemsToReturn = 10; // don't try to read all the items, since there may be a large amount
-
-try {
-  const returnedItems = await getRatingItems(itemsToReturn);
-  // do something with returnedItems here
-} catch (err){
-  // handle the error here
-}
-
+addRatingItem(itemName, itemDescription, image)
+  .then(() => {
+    // there should be no output on success
+  })
+  .catch((err) => {
+    // do something with the error here
+  });
 ```
 
 ## user-ratings
@@ -63,8 +64,37 @@ The `user-ratings` collection is a list of key-value pairs that hold all of the 
 
 ### Reading
 
-(todo)
+To read a user's rating, you must be logged in. As a logged in user, execute the following:
+
+```ts
+import { getUserRatings } from "./tasks/getUserRatings"; // replace with the path to getUserRatings.ts relative to the current file
+
+const userId = auth.currentUser.uid; // replace this with the user's id
+
+getUserRatings(userId)
+  .then((returnedRatings) => {
+    // will return an object of the user's ratings, or undefined if they haven't rated anything
+  })
+  .catch((err) => {
+    // handle the error here
+  });
+```
 
 ### Writing
 
-(todo)
+To add a rating, you must be logged in. To add a rating for the current user:
+
+```ts
+import { addRating } from "./tasks/addRating"; // replace with the path to addRating.ts relative to the current file
+
+const id = "abcd"; // replace with the id of the item to rate
+const ratingVal = 5; // replace with the selected rating
+
+addRating(id, ratingVal)
+  .then(() => {
+    // returns nothing on success
+  })
+  .catch((err) => {
+    // handle the error here
+  });
+```
