@@ -32,6 +32,7 @@ type BasicEmailFormInput = {
 
 interface AuthProps extends PropsWithChildren {
   actionType: "signup" | "signin";
+  noBorder: boolean;
 }
 export const AuthCard = ({ ...props }: AuthProps) => {
   const {
@@ -88,12 +89,14 @@ export const AuthCard = ({ ...props }: AuthProps) => {
 
   return (
     <>
-      <Card className="w-25">
+      <Card className={props.noBorder? "border-0" : ""}>
         <Card.Body>
-          <Card.Title>
-            Sign {props.actionType === "signup" ? "Up" : "In"}
-          </Card.Title>
-          <hr />
+          <span hidden={props.noBorder}>
+            <Card.Title>
+              Sign {props.actionType === "signup" ? "Up" : "In"}
+            </Card.Title>
+            <hr />
+          </span>
           <Form
             onSubmit={handleSubmit(onBasicLoginFormSubmit)}
             className="mb-2"
