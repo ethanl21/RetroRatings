@@ -98,3 +98,5 @@ addRating(id, ratingVal)
     // handle the error here
   });
 ```
+
+The average rating of a rating item will be updated whenever a user creates, updates, or deletes a rating.
