@@ -24,7 +24,7 @@ The `rating-items` collection is a list of key-value pairs describing each item 
 
 To add a new item to the database, you must be logged in. As a logged in user, execute the following:
 
-```jsx
+```ts
 import { addRatingItem } from "./tasks/addItem"; // replace with the path to addItem.tsx relative to the current file
 
 const itemName = "my new item";
@@ -36,6 +36,21 @@ try {
 } catch (err) {
   // handle the error here
 }
+```
+
+To read items from the database, you must be logged in. As a logged on user, execute the following:
+```ts
+import { getRatingItems } from "./tasks/getRatingItems"; // replace with the path to getRatingItems.tsx relative to the current file
+
+const itemsToReturn = 10; // don't try to read all the items, since there may be a large amount
+
+try {
+  const returnedItems = await getRatingItems(itemsToReturn);
+  // do something with returnedItems here
+} catch (err){
+  // handle the error here
+}
+
 ```
 
 ## user-ratings
