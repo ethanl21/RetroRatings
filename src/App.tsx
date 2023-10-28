@@ -12,6 +12,10 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
 import Modal from "react-bootstrap/Modal";
+import { RatingPickerCard } from "./components/RatingPickerCard";
+import { RatingItem, getRatingItem } from "./tasks/getRatingItems";
+import { getUserRating } from "./tasks/getUserRatings";
+import { setRating } from "./tasks/setRating";
 
 function App() {
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
@@ -31,15 +35,35 @@ function App() {
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
+  // for testing rating card
+  const [ratingItem, setRatingItem] = useState<RatingItem | null>(null);
+  const [demoRating, setDemoRating] = useState(0);
+
+  const debugId = "TmrDzWYpbZAhhHy8TUSv";
+  const getDebugRatingItem = async () => {
+    if (auth.currentUser) {
+      setRatingItem(await getRatingItem(debugId));
+
+      try {
+        const dbgRating = await getUserRating(auth.currentUser.uid, debugId);
+        setDemoRating(dbgRating);
+      } catch (err) {
+        setDemoRating(0);
+      }
+    } else {
+      alert("only logged in users can rate items!");
+    }
+  };
+
   return (
     <>
       <Tabs
-        defaultActiveKey="profile"
+        defaultActiveKey="home"
         id="uncontrolled-tab-example"
         className="mb-3"
       >
         <Tab eventKey="home" title="Home">
-          <>
+          <div>
             <Button variant="primary" onClick={openModal}>
               Sign In
             </Button>
@@ -79,9 +103,25 @@ function App() {
                 </Button>
               </Modal.Footer>
             </Modal>
-          </>
+          </div>
         </Tab>
-        <Tab eventKey="leaderboard" title="Leaderboard"></Tab>
+        <Tab eventKey="leaderboard" title="Leaderboard">
+          <Button onClick={getDebugRatingItem}>Get Debug Rating Item</Button>
+          {ratingItem && (
+            <RatingPickerCard
+              id={debugId}
+              name={ratingItem.name}
+              description={ratingItem.description}
+              img_src={ratingItem.image}
+              rating={demoRating}
+              OnRatingChanged={(id, rating) =>
+                setRating(id, rating)
+                  .then(() => alert("rating set!"))
+                  .catch((err) => alert(err))
+              }
+            />
+          )}
+        </Tab>
       </Tabs>
     </>
   );

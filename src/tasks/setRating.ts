@@ -63,7 +63,7 @@ export const setRating = async (ratingItemId: string, ratingValue: number) => {
       }
 
       // update the average rating
-      await updateDoc(ratingItemDoc, ratingItemSnapData);
+      return updateDoc(ratingItemDoc, ratingItemSnapData);
     } else {
       await setDoc(
         userRatingsRef,
@@ -79,9 +79,8 @@ export const setRating = async (ratingItemId: string, ratingValue: number) => {
       ratingItemSnapData.averageRating = temp / ratingItemSnapData.ratingCount;
 
       // update the average rating
-      await updateDoc(ratingItemDoc, ratingItemSnapData);
+      return updateDoc(ratingItemDoc, ratingItemSnapData);
     }
-    return Promise.resolve();
   } catch (err) {
     return Promise.reject(err);
   }
