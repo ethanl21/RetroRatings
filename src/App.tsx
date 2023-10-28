@@ -19,7 +19,7 @@ import { setRating } from "./tasks/setRating";
 
 function App() {
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
-    "signup"
+    "signin"
   );
 
   const logoutUser = async () => {
