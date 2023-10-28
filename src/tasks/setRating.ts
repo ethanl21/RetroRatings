@@ -63,8 +63,18 @@ export const setRating = async (ratingItemId: string, ratingValue: number) => {
       }
 
       // update the average rating
-      await updateDoc(ratingItemDoc, ratingItemSnapData);
+      return updateDoc(ratingItemDoc, ratingItemSnapData);
     } else {
+      const docSnap = await getDoc(userRatingsRef);
+      const docSnapData = docSnap.data();
+
+      let update = false;
+      let oldRatingValue = -1;
+      if (docSnapData && Object.keys(docSnapData).indexOf(ratingItemId) >= 0) {
+        update = true;
+        oldRatingValue = docSnapData[ratingItemId];
+      }
+
       await setDoc(
         userRatingsRef,
         { [ratingItemId]: ratingValue },
@@ -72,16 +82,25 @@ export const setRating = async (ratingItemId: string, ratingValue: number) => {
       );
 
       // calculate the new average rating
-      let temp =
-        ratingItemSnapData.averageRating * ratingItemSnapData.ratingCount;
-      ratingItemSnapData.ratingCount += 1;
-      temp += ratingValue;
-      ratingItemSnapData.averageRating = temp / ratingItemSnapData.ratingCount;
+      if (update) {
+        let temp =
+          ratingItemSnapData.averageRating * ratingItemSnapData.ratingCount;
+        temp -= oldRatingValue;
+        temp += ratingValue;
+        ratingItemSnapData.averageRating =
+          temp / ratingItemSnapData.ratingCount;
+      } else {
+        let temp =
+          ratingItemSnapData.averageRating * ratingItemSnapData.ratingCount;
+        ratingItemSnapData.ratingCount += 1;
+        temp += ratingValue;
+        ratingItemSnapData.averageRating =
+          temp / ratingItemSnapData.ratingCount;
+      }
 
       // update the average rating
-      await updateDoc(ratingItemDoc, ratingItemSnapData);
+      return updateDoc(ratingItemDoc, ratingItemSnapData);
     }
-    return Promise.resolve();
   } catch (err) {
     return Promise.reject(err);
   }
