@@ -1,20 +1,22 @@
+import { useEffect, useState } from "react";
+import { auth as fAuth } from "../config/firebase";
+import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import DOMPurify from "dompurify";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
-import { auth as fAuth } from "../config/firebase";
-import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
-
 import { BsArrowCounterclockwise, BsGithub } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
-import DOMPurify from "dompurify";
-import { TierList } from "./TierList";
-import { useEffect, useState } from "react";
+
 import { UserRatings, getUserRatings } from "../tasks/getUserRatings";
 import { getRatingItemImage } from "../tasks/getRatingItems";
-import Button from "react-bootstrap/Button";
+
+import { TierList } from "./TierList";
 
 function getTierListItems(ids: Array<string>) {
   const promises: Array<Promise<{ id: string; url: string }>> = [];
