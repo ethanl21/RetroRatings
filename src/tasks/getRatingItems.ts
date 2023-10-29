@@ -7,6 +7,7 @@ import {
   doc,
   Timestamp,
   orderBy,
+  where,
 } from "firebase/firestore";
 import { ref } from "firebase/storage";
 import { auth, db, storage } from "../config/firebase";
@@ -56,17 +57,45 @@ export const getHighestRatedItems = async (count: number) => {
   try {
     const q = query(
       collection(db, "rating-items"),
-      orderBy("averageRating"),
-      limit(count)
+      orderBy("ratingCount"),
+      where("ratingCount", ">", 0),
+      orderBy("averageRating", "desc"),
+      limit(count),
     );
     const querySnapshot = await getDocs(q);
 
-    const returnedRatingItems = new Map();
-    querySnapshot.forEach((doc) => {
-      returnedRatingItems.set(doc.id, doc.data());
+    const returnedRatingItems: Array<RatingItem> = [];
+    querySnapshot.docs.forEach((doc) => {
+      returnedRatingItems.push(doc.data() as RatingItem);
     });
 
-    return Promise.resolve(Object.fromEntries(returnedRatingItems));
+    return Promise.resolve(returnedRatingItems);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+export const getLowestRatedItems = async (count: number) => {
+  if (!auth.currentUser) {
+    return Promise.reject("Only logged in users can view rating items.");
+  }
+
+  try {
+    const q = query(
+      collection(db, "rating-items"),
+      orderBy("ratingCount"),
+      where("ratingCount", ">", 0),
+      orderBy("averageRating", "asc"),
+      limit(count),
+    );
+    const querySnapshot = await getDocs(q);
+
+    const returnedRatingItems: Array<RatingItem> = [];
+    querySnapshot.docs.forEach((doc) => {
+      returnedRatingItems.push(doc.data() as RatingItem);
+    });
+
+    return Promise.resolve(returnedRatingItems);
   } catch (err) {
     return Promise.reject(err);
   }
