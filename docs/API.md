@@ -28,11 +28,30 @@ const itemsToReturn = 10; // don't try to read all the items, since there may be
 getRatingItems(itemsToReturn)
   .then((returnedItems) => {
     // will return an object of the rating items
+    // note: image URLs will be in gs:// form and must be
+    // converted to download URLs using firebase's getDownloadUrl() function
   })
   .catch((err) => {
     // handle the error here
   });
 ```
+
+You can also get a single rating item's information:
+
+```ts
+const ratingItemId = "abcd"; // replace with the selected item's id
+
+getRatingItem(ratingItemId)
+  .then((returnedItem) => {
+    // process the item here
+    // note: the gs:// image URL is converted to the real URL as convenience in this function
+  })
+  .catch((err) => {
+    // handle the error here
+  });
+```
+
+`getRatingItemImage` is provided as a convenience function. It is used in the same way as `getRatingItem`, but only returns the image URL of the selected item if it exists.
 
 ### Writing
 
@@ -74,6 +93,21 @@ const userId = auth.currentUser.uid; // replace this with the user's id
 getUserRatings(userId)
   .then((returnedRatings) => {
     // will return an object of the user's ratings, or undefined if they haven't rated anything
+  })
+  .catch((err) => {
+    // handle the error here
+  });
+```
+
+You can also get a single rating:
+
+```ts
+const userId = auth.currentUser.uid; // replace with the user's id
+const itemId = "abcd"; // replace with the item id
+
+getUserRating(userId, itemId)
+  .then((returnedRating) => {
+    // process rating here
   })
   .catch((err) => {
     // handle the error here

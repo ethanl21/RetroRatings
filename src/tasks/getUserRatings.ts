@@ -25,6 +25,12 @@ export const getUserRatings = async (userId: string) => {
   }
 };
 
+/**
+ * @brief gets a single rating
+ * @param userId ID of the user whose rating is being returned
+ * @param ratingItemId ID of the item that the user rated
+ * @returns The user's rating of the selected item, if the selected user, selected item, and selected user's rating of the selected item exist.
+ */
 export const getUserRating = async (userId: string, ratingItemId: string) => {
   try {
     if (!auth.currentUser) {

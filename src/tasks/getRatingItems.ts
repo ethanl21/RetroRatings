@@ -65,6 +65,11 @@ export const getRatingItem = async (id: string) => {
   return Promise.resolve(docData);
 };
 
+/**
+ * @brief convenience function wrapper for getRatingItem. Only returns the image URL.
+ * @param id id of the rating item
+ * @returns a URL of the selected item's image, if the item exists
+ */
 export const getRatingItemImage = async (id: string) => {
   const item = await getRatingItem(id);
   if (item) {
