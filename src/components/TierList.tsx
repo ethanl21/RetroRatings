@@ -4,6 +4,7 @@ import DOMPurify from "dompurify";
 import Image from "react-bootstrap/Image";
 import { Stack } from "react-bootstrap";
 import { nanoid } from "nanoid";
+import "./tierlist.css";
 
 const getTierImages = (
   ratings: Array<{ url: string; rating: number }>,
@@ -11,7 +12,9 @@ const getTierImages = (
 ) => {
   return ratings
     .filter((rating) => Math.round(rating.rating) === tier)
-    .map((rating) => <Image src={rating.url} key={nanoid()} thumbnail width="100" />);
+    .map((rating) => (
+      <Image src={rating.url} key={nanoid()} thumbnail width="100" />
+    ));
 };
 
 interface TierListProps {
@@ -29,14 +32,14 @@ export const TierList = ({ ...props }: TierListProps) => {
 
   return (
     <>
-      <Table striped bordered hover className="h-max">
+      <Table striped bordered hover>
         <thead>
           <tr>
-            <td colSpan={2}>{nameDisplay}'s ratings</td>
+            <td colSpan={2}><h2>{nameDisplay}'s ratings</h2></td>
           </tr>
         </thead>
         <tbody>
-          <tr style={{ lineHeight: "100px" }}>
+          <tr>
             <td>
               5 <BsStarFill />
             </td>
@@ -46,7 +49,7 @@ export const TierList = ({ ...props }: TierListProps) => {
               </Stack>
             </td>
           </tr>
-          <tr style={{ lineHeight: "100px" }}>
+          <tr>
             <td>
               4 <BsStarFill />
             </td>
@@ -56,7 +59,7 @@ export const TierList = ({ ...props }: TierListProps) => {
               </Stack>
             </td>
           </tr>
-          <tr style={{ lineHeight: "100px" }}>
+          <tr>
             <td>
               3 <BsStarFill />
             </td>
@@ -66,7 +69,7 @@ export const TierList = ({ ...props }: TierListProps) => {
               </Stack>
             </td>
           </tr>
-          <tr style={{ lineHeight: "100px" }}>
+          <tr>
             <td>
               2 <BsStarFill />
             </td>
@@ -76,7 +79,7 @@ export const TierList = ({ ...props }: TierListProps) => {
               </Stack>
             </td>
           </tr>
-          <tr style={{ lineHeight: "100px" }}>
+          <tr>
             <td>
               1 <BsStarFill />
             </td>
@@ -86,7 +89,7 @@ export const TierList = ({ ...props }: TierListProps) => {
               </Stack>
             </td>
           </tr>
-          <tr style={{ lineHeight: "100px" }}>
+          <tr>
             <td>
               0 <BsStarFill />
             </td>
