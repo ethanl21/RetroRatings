@@ -53,9 +53,9 @@ function App() {
   const [demoRating, setDemoRating] = useState(0);
 
   // keep track of the index of the item in the list
-  var [itemIndex, setItemIndex] = useState(0); 
+  const [itemIndex, setItemIndex] = useState(0); 
 
-  let entryKeys: string[] = [
+  const entryKeys: string[] = [
     "0D3eg9jXmfeYiRDcErGc",
     "1Tx6zUj30nEHw7ex9O1J",
     "3wSJ3DSuxgEZI0VZU7vl",
@@ -123,12 +123,12 @@ function App() {
   const debugId = String(entryKeys[itemIndex]);
   // console.log(debugId);
   async function getDebugRatingItem() {
-    if (auth.currentUser) {
+    if (auth) {
       // console.log("rendering new item");
       // console.log(debugId);
       setRatingItem(await getRatingItem(String(entryKeys[itemIndex])));
       try {
-        const dbgRating = await getUserRating(auth?.uid, debugId);
+        const dbgRating = await getUserRating(auth.uid, debugId);
         setDemoRating(dbgRating);
       } catch (err) {
         setDemoRating(0);
@@ -148,7 +148,7 @@ function App() {
         <Tab eventKey="home" title="Home">
           <div>
             <Button variant="primary" onClick={openModal}>
-              {auth.currentUser ? "Sign Out" : "Sign In"}
+              {auth ? "Sign Out" : "Sign In"}
             </Button>
 
             <Modal show={showModal} onHide={closeModal}>
@@ -174,7 +174,7 @@ function App() {
                 </Button>
                 <Button
                   onClick={logoutUser}
-                  disabled={auth.currentUser ? false : true}
+                  disabled={auth ? false : true}
                 >
                   Sign Out
                 </Button>
@@ -205,7 +205,7 @@ function App() {
                 setRating(id, rating)
                   .then(() => {
                     // alert("rating set!"); // Commented out to speed up user experience
-                    setItemIndex(itemIndex += 1); // increase index first
+                    setItemIndex(itemIndex + 1); // increase index first
                     // console.log(itemIndex); // used to debug
                     getDebugRatingItem(); // call function to refresh item 
                   })
