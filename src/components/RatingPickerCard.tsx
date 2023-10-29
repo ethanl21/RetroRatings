@@ -5,6 +5,7 @@ import { Rating } from "react-simple-star-rating";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
 
+
 interface RatingPickerCardProps {
   id: string;
   name: string;
