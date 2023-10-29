@@ -14,6 +14,7 @@ import { setRating } from "./tasks/setRating";
 import { AuthCard } from "./components/AuthCard";
 import { RatingPickerCard } from "./components/RatingPickerCard";
 import { ProfilePage } from "./components/ProfilePage";
+import { Leaderboard } from "./components/Leaderboard";
 
 function App() {
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
@@ -192,7 +193,9 @@ function App() {
           <ProfilePage handleSignOut={handleSignOut} />
         </Tab>
 
-        <Tab eventKey="leaderboard" title="Leaderboard"></Tab>
+        <Tab eventKey="leaderboard" title="Leaderboard" disabled={!auth}>
+          <Leaderboard />
+        </Tab>
 
         {/* Tab used to upload new images
         <Tab eventKey="uploadItem" title="Upload">
