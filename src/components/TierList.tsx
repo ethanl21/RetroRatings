@@ -86,6 +86,16 @@ export const TierList = ({ ...props }: TierListProps) => {
               </Stack>
             </td>
           </tr>
+          <tr style={{ lineHeight: "100px" }}>
+            <td>
+              0 <BsStarFill />
+            </td>
+            <td>
+              <Stack direction="horizontal" gap={1}>
+                {getTierImages(props.ratings, 0)}
+              </Stack>
+            </td>
+          </tr>
         </tbody>
       </Table>
     </>

@@ -7,13 +7,14 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
 
-import { BsGithub } from "react-icons/bs";
+import { BsArrowCounterclockwise, BsGithub } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import DOMPurify from "dompurify";
 import { TierList } from "./TierList";
 import { useEffect, useState } from "react";
 import { UserRatings, getUserRatings } from "../tasks/getUserRatings";
 import { getRatingItemImage } from "../tasks/getRatingItems";
+import Button from "react-bootstrap/Button";
 
 function getTierListItems(ids: Array<string>) {
   const promises: Array<Promise<{ id: string; url: string }>> = [];
@@ -51,6 +52,13 @@ export const ProfilePage = () => {
     Array<{ url: string; rating: number }>
   >([]);
 
+  // Used to manually update the tier list
+  const updateUserRatings = () => {
+    if (auth) {
+      getUserRatings(auth.uid).then((val) => setRatings(val));
+    }
+  };
+
   useEffect(() => {
     if (auth) {
       getUserRatings(auth.uid).then((val) => setRatings(val));
@@ -81,7 +89,15 @@ export const ProfilePage = () => {
   return (
     <>
       <Container>
-        <h1>Profile Page</h1>
+        <h1>
+          Profile Page{" "}
+          <Button
+            aria-label="refresh tier list"
+            onClick={() => updateUserRatings()}
+          >
+            <BsArrowCounterclockwise />
+          </Button>
+        </h1>
         <Row>
           <Col xs={8}>
             {ratings && <TierList name={displayName} ratings={tierListItems} />}
