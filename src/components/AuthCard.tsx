@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { auth as fAuth } from "../config/firebase";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -19,6 +19,7 @@ import {
 } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import {
+  useAuthState,
   useCreateUserWithEmailAndPassword,
   useSignInWithEmailAndPassword,
   useSignInWithGithub,
@@ -32,6 +33,8 @@ type BasicEmailFormInput = {
 
 interface AuthProps extends PropsWithChildren {
   actionType: "signup" | "signin";
+  setActionType?: (newActionType: "signup" | "signin") => void;
+  onAuthenticated?: () => void;
   noBorder: boolean;
 }
 export const AuthCard = ({ ...props }: AuthProps) => {
@@ -94,8 +97,23 @@ export const AuthCard = ({ ...props }: AuthProps) => {
     useSignInWithGoogle(fAuth);
   const [signInWithGitHub, githubUser, githubLoading, githubError] =
     useSignInWithGithub(fAuth);
+  
+  const [authState, authStateLoading, authStateError] = useAuthState(fAuth);
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleSetActionType = (newActionType: "signup" | "signin") => {
+    if (props.setActionType) {
+      props.setActionType(newActionType);
+    }
+  };
+
+  const cb = props.onAuthenticated;
+  useEffect(() => {
+    if(authState && cb){
+      cb();
+    }
+  }, [authState, cb])
 
   return (
     <>
@@ -192,6 +210,37 @@ export const AuthCard = ({ ...props }: AuthProps) => {
             </Button>
           </Stack>
         </Card.Body>
+        <Card.Footer>
+          <div className="d-flex justify-content-center align-items-baseline">
+            {props.actionType === "signup" ? (
+              <>
+                <p>Already have an account?&nbsp;</p>
+                <Button
+                  variant="link"
+                  className="p-0"
+                  onClick={() => {
+                    handleSetActionType("signin");
+                  }}
+                >
+                  Sign in here
+                </Button>
+              </>
+            ) : (
+              <>
+                <p>Don't have an account?&nbsp;</p>
+                <Button
+                  variant="link"
+                  className="p-0"
+                  onClick={() => {
+                    handleSetActionType("signup");
+                  }}
+                >
+                  Sign up now
+                </Button>
+              </>
+            )}
+          </div>
+        </Card.Footer>
       </Card>
     </>
   );
