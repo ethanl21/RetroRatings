@@ -44,7 +44,7 @@ export const RatingPickerCard = ({ ...props }: RatingPickerCardProps) => {
             />
           </div>
           <hr />
-          <div className="d-flex justify-content-end">
+          <div className="d-flex justify-content-center">
             <Button
               variant="primary"
               onClick={() => {

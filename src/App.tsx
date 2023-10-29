@@ -21,6 +21,7 @@ import {
 import { getUserRating } from "./tasks/getUserRatings";
 import { setRating } from "./tasks/setRating";
 
+
 // used to add new items
 // import { AddNewItemCard } from "./components/AddNewItemCard";
 // import { addRatingItem } from "./tasks/addItem";
@@ -48,7 +49,7 @@ function App() {
   const [demoRating, setDemoRating] = useState(0);
 
   // keep track of the index of the item in the list
-  var [itemIndex, setItemIndex] = useState(0); 
+  var [itemIndex, setItemIndex] = useState(0);
 
   let entryKeys: string[] = [
     "0D3eg9jXmfeYiRDcErGc",
@@ -106,7 +107,7 @@ function App() {
   ];
 
   // Use code below to generate array of item IDs
-  // 
+  //
   // setEntryKeys(foo);
   // getRatingItems(100).then(async (value) => {
   //   let keys = Object.keys(value);
@@ -133,18 +134,31 @@ function App() {
     }
   }
 
+  function next(){
+    setItemIndex(itemIndex+=1);
+    getDebugRatingItem();
+  }
+  
+  function prev(){
+    setItemIndex(itemIndex-=1);
+    getDebugRatingItem();
+  }
+
   return (
     <>
       <Tabs
         defaultActiveKey="home"
         id="uncontrolled-tab-example"
         className="mb-3"
+        
       >
         <Tab eventKey="home" title="Home">
           <div>
-            <Button variant="primary" onClick={openModal}>
-              {auth.currentUser ? "Sign Out" : "Sign In"}
-            </Button>
+            <div className="d-flex flex-row-reverse">
+              <Button variant="primary" onClick={openModal}>
+                {auth.currentUser ? "Sign Out" : "Sign In"}
+              </Button>
+            </div>
 
             <Modal show={showModal} onHide={closeModal}>
               <Modal.Header closeButton>
@@ -187,28 +201,43 @@ function App() {
               </Modal.Footer>
             </Modal>
           </div>
-          <Button onClick={getDebugRatingItem}>Get Debug Rating Item</Button>
-          {ratingItem && (
-            <RatingPickerCard
-              id={debugId}
-              name={ratingItem.name}
-              description={ratingItem.description}
-              img_src={ratingItem.image}
-              rating={demoRating}
-              OnRatingChanged={(id, rating) =>
-                setRating(id, rating)
+          <div className="d-flex justify-content-center">
+            <div className="d-flex flex-column">
+
+              <Button onClick={getDebugRatingItem}>Start Rating Items</Button>
+              {ratingItem && (
+                <RatingPickerCard
+                id={debugId}
+                name={ratingItem.name}
+                description={ratingItem.description}
+                img_src={ratingItem.image}
+                rating={demoRating}
+                OnRatingChanged={(id, rating) =>
+                  setRating(id, rating)
                   .then(() => {
                     // alert("rating set!"); // Commented out to speed up user experience
-                    setItemIndex(itemIndex += 1); // increase index first
+                    setItemIndex((itemIndex += 1)); // increase index first
                     // console.log(itemIndex); // used to debug
-                    getDebugRatingItem(); // call function to refresh item 
+                    getDebugRatingItem(); // call function to refresh item
                   })
                   .catch((err) => alert(err))
-              }
-            />
-          )}
+                }
+                />
+                )}
+                </div>
 
-          <Button onClick={getDebugRatingItem}>Next</Button>
+          </div>
+          <div
+            className="d-flex justify-content-center"
+            style={{ padding: 20 }}
+          >
+            <div style={{ padding: 30}}>
+            <Button onClick={prev} size="lg">  Prev  </Button>
+            </div>
+            <div style={{ padding: 30 }}>
+            <Button onClick={next} size="lg">  Next  </Button>
+            </div>
+          </div>
         </Tab>
         <Tab eventKey="leaderboard" title="Leaderboard"></Tab>
 
