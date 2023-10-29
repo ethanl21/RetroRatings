@@ -3,6 +3,7 @@ import Table from "react-bootstrap/Table";
 import DOMPurify from "dompurify";
 import Image from "react-bootstrap/Image";
 import { Stack } from "react-bootstrap";
+import { nanoid } from "nanoid";
 
 const getTierImages = (
   ratings: Array<{ url: string; rating: number }>,
@@ -10,7 +11,7 @@ const getTierImages = (
 ) => {
   return ratings
     .filter((rating) => Math.round(rating.rating) === tier)
-    .map((rating) => <Image src={rating.url} thumbnail width="100" />);
+    .map((rating) => <Image src={rating.url} key={nanoid()} thumbnail width="100" />);
 };
 
 interface TierListProps {
