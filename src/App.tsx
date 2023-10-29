@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { auth as fAuth } from "./config/firebase";
-import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 import Button from "react-bootstrap/Button";
 import Tab from "react-bootstrap/Tab";
@@ -15,7 +15,6 @@ import { AuthCard } from "./components/AuthCard";
 import { RatingPickerCard } from "./components/RatingPickerCard";
 import { ProfilePage } from "./components/ProfilePage";
 
-
 function App() {
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
     "signin"
@@ -23,27 +22,13 @@ function App() {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [auth, authLoading, authError] = useAuthState(fAuth);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [signOut, signoutLoading, signoutError] = useSignOut(fAuth);
-
-  const logoutUser = async () => {
-    try {
-      if (auth) {
-        await signOut();
-        if (signoutError) {
-          alert(signoutError);
-        } else {
-          alert("You've been signed out.");
-        }
-      } else {
-        alert("you're not signed in!");
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const [showModal, setShowModal] = useState(false);
+
+  const [activeTabKey, setActiveTabKey] = useState("home");
+  const handleSignOut = () => {
+    setActiveTabKey("home");
+  };
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -53,7 +38,7 @@ function App() {
   const [demoRating, setDemoRating] = useState(0);
 
   // keep track of the index of the item in the list
-  const [itemIndex, setItemIndex] = useState(0); 
+  const [itemIndex, setItemIndex] = useState(0);
 
   const entryKeys: string[] = [
     "0D3eg9jXmfeYiRDcErGc",
@@ -111,7 +96,7 @@ function App() {
   ];
 
   // Use code below to generate array of item IDs
-  // 
+  //
   // setEntryKeys(foo);
   // getRatingItems(100).then(async (value) => {
   //   let keys = Object.keys(value);
@@ -141,14 +126,25 @@ function App() {
   return (
     <>
       <Tabs
-        defaultActiveKey="home"
-        id="uncontrolled-tab-example"
+        activeKey={activeTabKey}
+        onSelect={(k) => setActiveTabKey(k ? k : "home")}
         className="mb-3"
       >
         <Tab eventKey="home" title="Home">
           <div>
-            <Button variant="primary" onClick={openModal}>
-              {auth ? "Sign Out" : "Sign In"}
+            <Button
+              variant="primary"
+              onClick={() => {
+                if (auth) {
+                  alert(
+                    'You\'re already logged in!\n(Sign out in the "Profile" tab)'
+                  );
+                } else {
+                  openModal();
+                }
+              }}
+            >
+              Sign In
             </Button>
 
             <Modal show={showModal} onHide={closeModal}>
@@ -159,38 +155,13 @@ function App() {
               </Modal.Header>
 
               <Modal.Body>
-                <AuthCard actionType={authActionType} noBorder={true} />
+                <AuthCard
+                  actionType={authActionType}
+                  noBorder={true}
+                  setActionType={(newAct) => setAuthActionType(newAct)}
+                  onAuthenticated={closeModal}
+                />
               </Modal.Body>
-
-              <Modal.Footer>
-                <Button
-                  onClick={() => {
-                    authActionType === "signup"
-                      ? setAuthActionType("signin")
-                      : setAuthActionType("signup");
-                  }}
-                >
-                  Toggle Form Type
-                </Button>
-                <Button
-                  onClick={logoutUser}
-                  disabled={auth ? false : true}
-                >
-                  Sign Out
-                </Button>
-                <Button
-                  onClick={() => {
-                    console.log();
-                    if (auth?.providerData[0].providerId === "password") {
-                      alert(auth.email);
-                    } else {
-                      alert(auth?.displayName);
-                    }
-                  }}
-                >
-                  Who am I?
-                </Button>
-              </Modal.Footer>
             </Modal>
           </div>
           <Button onClick={getDebugRatingItem}>Get Debug Rating Item</Button>
@@ -207,7 +178,7 @@ function App() {
                     // alert("rating set!"); // Commented out to speed up user experience
                     setItemIndex(itemIndex + 1); // increase index first
                     // console.log(itemIndex); // used to debug
-                    getDebugRatingItem(); // call function to refresh item 
+                    getDebugRatingItem(); // call function to refresh item
                   })
                   .catch((err) => alert(err))
               }
@@ -217,9 +188,8 @@ function App() {
           <Button onClick={getDebugRatingItem}>Next</Button>
         </Tab>
 
-
         <Tab eventKey="profile" title="Profile" disabled={!auth}>
-          <ProfilePage />
+          <ProfilePage handleSignOut={handleSignOut} />
         </Tab>
 
         <Tab eventKey="leaderboard" title="Leaderboard"></Tab>
@@ -228,7 +198,6 @@ function App() {
         <Tab eventKey="uploadItem" title="Upload">
           <AddNewItemCard OnFormSubmit={addRatingItem} />
         </Tab> */}
-
       </Tabs>
     </>
   );

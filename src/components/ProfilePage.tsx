@@ -1,20 +1,22 @@
+import { useEffect, useState } from "react";
+import { auth as fAuth } from "../config/firebase";
+import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import DOMPurify from "dompurify";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
-import { auth as fAuth } from "../config/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
-
 import { BsArrowCounterclockwise, BsGithub } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
-import DOMPurify from "dompurify";
-import { TierList } from "./TierList";
-import { useEffect, useState } from "react";
+
 import { UserRatings, getUserRatings } from "../tasks/getUserRatings";
 import { getRatingItemImage } from "../tasks/getRatingItems";
-import Button from "react-bootstrap/Button";
+
+import { TierList } from "./TierList";
 
 function getTierListItems(ids: Array<string>) {
   const promises: Array<Promise<{ id: string; url: string }>> = [];
@@ -26,7 +28,11 @@ function getTierListItems(ids: Array<string>) {
   return Promise.all(promises);
 }
 
-export const ProfilePage = () => {
+interface ProfilePageProps {
+  handleSignOut?: () => void;
+}
+
+export const ProfilePage = ({ ...props }: ProfilePageProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [auth, authLoading, authError] = useAuthState(fAuth);
 
@@ -51,6 +57,18 @@ export const ProfilePage = () => {
   const [tierListItems, setTierListItems] = useState<
     Array<{ url: string; rating: number }>
   >([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [signOut, signoutLoading, signoutError] = useSignOut(fAuth);
+
+  const onSignOut = () => {
+    if (props.handleSignOut) {
+      signOut().then(() => {
+        if (props.handleSignOut) {
+          props.handleSignOut();
+        }
+      });
+    }
+  };
 
   // Used to manually update the tier list
   const updateUserRatings = () => {
@@ -89,15 +107,6 @@ export const ProfilePage = () => {
   return (
     <>
       <Container>
-        <h1>
-          Profile Page{" "}
-          <Button
-            aria-label="refresh tier list"
-            onClick={() => updateUserRatings()}
-          >
-            <BsArrowCounterclockwise />
-          </Button>
-        </h1>
         <Row>
           <Col xs={8}>
             {ratings && <TierList name={displayName} ratings={tierListItems} />}
@@ -129,6 +138,17 @@ export const ProfilePage = () => {
                 </Card.Text>
               </Card.Body>
             </Card>
+            <div className="py-2 d-flex justify-content-center gap-2">
+              <Button
+                aria-label="refresh tier list"
+                onClick={() => updateUserRatings()}
+              >
+                <BsArrowCounterclockwise />
+              </Button>
+              <Button variant="danger" onClick={() => onSignOut()}>
+                Sign Out
+              </Button>
+            </div>
           </Col>
         </Row>
       </Container>
