@@ -103,11 +103,14 @@ function App() {
                 </Button>
                 <Button onClick={logoutUser}>Sign Out</Button>
                 <Button
-                  onClick={() =>
-                    {console.log(JSON.stringify(auth));
-                    alert(auth?.displayName ? auth.displayName : "You're not logged in!");
-                  }
-                  }
+                  onClick={() => {
+                    console.log();
+                    if (auth?.providerData[0].providerId === "password") {
+                      alert(auth.email);
+                    } else {
+                      alert(auth?.displayName);
+                    }
+                  }}
                 >
                   Who am I?
                 </Button>

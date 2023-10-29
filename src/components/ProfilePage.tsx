@@ -10,7 +10,20 @@ import Stack from "react-bootstrap/Stack";
 import { BsGithub } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import DOMPurify from "dompurify";
+import { TierList } from "./TierList";
+import { useEffect, useState } from "react";
+import { UserRatings, getUserRatings } from "../tasks/getUserRatings";
+import { getRatingItemImage } from "../tasks/getRatingItems";
 
+function getTierListItems(ids: Array<string>) {
+  const promises: Array<Promise<{ id: string; url: string }>> = [];
+
+  ids.forEach((id) => {
+    promises.push(getRatingItemImage(id));
+  });
+
+  return Promise.all(promises);
+}
 
 export const ProfilePage = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,19 +33,60 @@ export const ProfilePage = () => {
   if (auth?.photoURL) {
     avatarComponent = <Image src={auth.photoURL} className="w-50" rounded />;
   } else if (auth) {
-    avatarComponent = <Image src={`https://ui-avatars.com/api/?name=${auth.email?.split(" ").join("+")}`} className="w-50" rounded />;
+    avatarComponent = (
+      <Image
+        src={`https://ui-avatars.com/api/?name=${auth?.email
+          ?.split(" ")
+          .join("+")}`}
+        className="w-50"
+        rounded
+      />
+    );
   }
+
+  const [displayName, setDisplayName] = useState("");
+  const [ratings, setRatings] = useState<UserRatings | null>(null);
+  const [ratingsCount, setRatingsCount] = useState(0);
+  const [tierListItems, setTierListItems] = useState<
+    Array<{ url: string; rating: number }>
+  >([]);
+
+  useEffect(() => {
+    if (auth) {
+      getUserRatings(auth.uid).then((val) => setRatings(val));
+
+      if (auth.displayName) {
+        setDisplayName(auth.displayName);
+      } else if (auth.email) {
+        setDisplayName(auth.email);
+      }
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    if (ratings) {
+      const newTierListItems: Array<{ url: string; rating: number }> = [];
+      getTierListItems(Object.keys(ratings)).then((items) => {
+        items.forEach((item) => {
+          newTierListItems.push({ url: item.url, rating: ratings[item.id] });
+        });
+
+        setTierListItems(newTierListItems);
+      });
+
+      setRatingsCount(Object.keys(ratings).length);
+    }
+  }, [ratings]);
 
   return (
     <>
-      <h1>Profile Page</h1>
       <Container>
+        <h1>Profile Page</h1>
         <Row>
           <Col xs={8}>
-            <h2>col 0</h2>
+            {ratings && <TierList name={displayName} ratings={tierListItems} />}
           </Col>
           <Col>
-            <h2>col 1</h2>
             <Card>
               <Card.Header>
                 <div className="d-flex justify-content-center">
@@ -42,7 +96,7 @@ export const ProfilePage = () => {
               <Card.Body>
                 <Card.Title>
                   <Stack direction="horizontal" gap={2}>
-                    {auth && auth?.displayName ? DOMPurify.sanitize(auth.displayName) : DOMPurify.sanitize(auth!.email!)}
+                    {DOMPurify.sanitize(displayName)}
                     {auth?.providerData[0].providerId === "github.com" && (
                       <BsGithub />
                     )}
@@ -54,7 +108,9 @@ export const ProfilePage = () => {
                     )}
                   </Stack>
                 </Card.Title>
-                <Card.Text>xyz ratings</Card.Text>
+                <Card.Text>
+                  {ratingsCount} rating{ratingsCount !== 1 && "s"}
+                </Card.Text>
               </Card.Body>
             </Card>
           </Col>
