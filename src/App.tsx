@@ -1,38 +1,43 @@
 import { useState } from "react";
-import { signOut } from "firebase/auth";
-import { AuthCard } from "./components/AuthCard";
-import { auth } from "./config/firebase";
-// import { AddNewItemCard } from "./components/AddNewItemCard";
-// import { addRatingItem } from "./tasks/addItem";
+import { auth as fAuth } from "./config/firebase";
+import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 
 import Button from "react-bootstrap/Button";
-// import Stack from "react-bootstrap/Stack"; // Not used
-
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-
 import Modal from "react-bootstrap/Modal";
-import { RatingPickerCard } from "./components/RatingPickerCard";
-import {
-  RatingItem,
-  getRatingItem,
-  // getRatingItems, // used to get all item IDs
-} from "./tasks/getRatingItems";
+
+import { RatingItem, getRatingItem } from "./tasks/getRatingItems";
 import { getUserRating } from "./tasks/getUserRatings";
 import { setRating } from "./tasks/setRating";
 
-// used to add new items
-// import { AddNewItemCard } from "./components/AddNewItemCard";
-// import { addRatingItem } from "./tasks/addItem";
+import { AuthCard } from "./components/AuthCard";
+import { RatingPickerCard } from "./components/RatingPickerCard";
+import { ProfilePage } from "./components/ProfilePage";
+
 
 function App() {
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
     "signin"
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [auth, authLoading, authError] = useAuthState(fAuth);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [signOut, signoutLoading, signoutError] = useSignOut(fAuth);
+
   const logoutUser = async () => {
     try {
-      await signOut(auth);
+      if (auth) {
+        await signOut();
+        if (signoutError) {
+          alert(signoutError);
+        } else {
+          alert("You've been signed out.");
+        }
+      } else {
+        alert("you're not signed in!");
+      }
     } catch (err) {
       console.error(err);
     }
@@ -48,9 +53,9 @@ function App() {
   const [demoRating, setDemoRating] = useState(0);
 
   // keep track of the index of the item in the list
-  var [itemIndex, setItemIndex] = useState(0); 
+  const [itemIndex, setItemIndex] = useState(0); 
 
-  let entryKeys: string[] = [
+  const entryKeys: string[] = [
     "0D3eg9jXmfeYiRDcErGc",
     "1Tx6zUj30nEHw7ex9O1J",
     "3wSJ3DSuxgEZI0VZU7vl",
@@ -118,12 +123,12 @@ function App() {
   const debugId = String(entryKeys[itemIndex]);
   // console.log(debugId);
   async function getDebugRatingItem() {
-    if (auth.currentUser) {
+    if (auth) {
       // console.log("rendering new item");
       // console.log(debugId);
       setRatingItem(await getRatingItem(String(entryKeys[itemIndex])));
       try {
-        const dbgRating = await getUserRating(auth.currentUser.uid, debugId);
+        const dbgRating = await getUserRating(auth.uid, debugId);
         setDemoRating(dbgRating);
       } catch (err) {
         setDemoRating(0);
@@ -143,7 +148,7 @@ function App() {
         <Tab eventKey="home" title="Home">
           <div>
             <Button variant="primary" onClick={openModal}>
-              {auth.currentUser ? "Sign Out" : "Sign In"}
+              {auth ? "Sign Out" : "Sign In"}
             </Button>
 
             <Modal show={showModal} onHide={closeModal}>
@@ -169,18 +174,19 @@ function App() {
                 </Button>
                 <Button
                   onClick={logoutUser}
-                  disabled={auth.currentUser ? false : true}
+                  disabled={auth ? false : true}
                 >
                   Sign Out
                 </Button>
                 <Button
-                  onClick={() =>
-                    alert(
-                      auth.currentUser?.email
-                        ? auth.currentUser?.email
-                        : "You're not logged in!"
-                    )
-                  }
+                  onClick={() => {
+                    console.log();
+                    if (auth?.providerData[0].providerId === "password") {
+                      alert(auth.email);
+                    } else {
+                      alert(auth?.displayName);
+                    }
+                  }}
                 >
                   Who am I?
                 </Button>
@@ -199,7 +205,7 @@ function App() {
                 setRating(id, rating)
                   .then(() => {
                     // alert("rating set!"); // Commented out to speed up user experience
-                    setItemIndex(itemIndex += 1); // increase index first
+                    setItemIndex(itemIndex + 1); // increase index first
                     // console.log(itemIndex); // used to debug
                     getDebugRatingItem(); // call function to refresh item 
                   })
@@ -210,12 +216,19 @@ function App() {
 
           <Button onClick={getDebugRatingItem}>Next</Button>
         </Tab>
+
+
+        <Tab eventKey="profile" title="Profile" disabled={!auth}>
+          <ProfilePage />
+        </Tab>
+
         <Tab eventKey="leaderboard" title="Leaderboard"></Tab>
 
         {/* Tab used to upload new images
         <Tab eventKey="uploadItem" title="Upload">
           <AddNewItemCard OnFormSubmit={addRatingItem} />
         </Tab> */}
+
       </Tabs>
     </>
   );

@@ -1,6 +1,10 @@
 import { getDoc, doc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 
+export type UserRatings = {
+  [itemId: string]: number;
+}
+
 /**
  * @brief Gets a user's ratings
  * @param userId ID of the user to get ratings from
@@ -15,7 +19,7 @@ export const getUserRatings = async (userId: string) => {
     const docRef = doc(db, "user-ratings", userId);
     const docSnap = await getDoc(docRef);
 
-    return Promise.resolve(docSnap.data());
+    return Promise.resolve(docSnap.data() as UserRatings);
   } catch (err) {
     return Promise.reject(err);
   }

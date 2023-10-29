@@ -64,3 +64,12 @@ export const getRatingItem = async (id: string) => {
 
   return Promise.resolve(docData);
 };
+
+export const getRatingItemImage = async (id: string) => {
+    const item = await getRatingItem(id);
+    if(item){
+      return Promise.resolve({id: id, url: item.image});
+    }
+
+    return Promise.reject();
+};
