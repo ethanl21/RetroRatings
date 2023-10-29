@@ -48,7 +48,7 @@ function App() {
   const [demoRating, setDemoRating] = useState(0);
 
   // keep track of the index of the item in the list
-  const [itemIndex, setItemIndex] = useState(0); 
+  var [itemIndex, setItemIndex] = useState(0); 
 
   let entryKeys: string[] = [
     "0D3eg9jXmfeYiRDcErGc",
@@ -114,11 +114,14 @@ function App() {
   // });
 
   // const debugId = "TmrDzWYpbZAhhHy8TUSv";
+
   const debugId = String(entryKeys[itemIndex]);
-  console.log(debugId);
+  // console.log(debugId);
   async function getDebugRatingItem() {
     if (auth.currentUser) {
-      setRatingItem(await getRatingItem(debugId));
+      // console.log("rendering new item");
+      // console.log(debugId);
+      setRatingItem(await getRatingItem(String(entryKeys[itemIndex])));
       try {
         const dbgRating = await getUserRating(auth.currentUser.uid, debugId);
         setDemoRating(dbgRating);
@@ -195,17 +198,17 @@ function App() {
               OnRatingChanged={(id, rating) =>
                 setRating(id, rating)
                   .then(() => {
-                    setItemIndex(itemIndex + 1); // increase index first
+                    // alert("rating set!"); // Commented out to speed up user experience
+                    setItemIndex(itemIndex += 1); // increase index first
+                    // console.log(itemIndex); // used to debug
                     getDebugRatingItem(); // call function to refresh item 
-                    // alert("rating set!"); Commented out to speed up user experience
-                    // console.log(itemIndex); used to debug
                   })
                   .catch((err) => alert(err))
               }
             />
           )}
 
-          {/* <Button onClick={getDebugRatingItem}>Next</Button> */}
+          <Button onClick={getDebugRatingItem}>Next</Button>
         </Tab>
         <Tab eventKey="leaderboard" title="Leaderboard"></Tab>
 
