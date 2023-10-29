@@ -8,7 +8,7 @@ import "./tierlist.css";
 
 const getTierImages = (
   ratings: Array<{ url: string; rating: number }>,
-  tier: number
+  tier: number,
 ) => {
   return ratings
     .filter((rating) => Math.round(rating.rating) === tier)
@@ -35,7 +35,9 @@ export const TierList = ({ ...props }: TierListProps) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <td colSpan={2}><h2>{nameDisplay}'s ratings</h2></td>
+            <td colSpan={2}>
+              <h2>{nameDisplay}'s ratings</h2>
+            </td>
           </tr>
         </thead>
         <tbody>

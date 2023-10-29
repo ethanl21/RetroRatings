@@ -66,10 +66,10 @@ export const getRatingItem = async (id: string) => {
 };
 
 export const getRatingItemImage = async (id: string) => {
-    const item = await getRatingItem(id);
-    if(item){
-      return Promise.resolve({id: id, url: item.image});
-    }
+  const item = await getRatingItem(id);
+  if (item) {
+    return Promise.resolve({ id: id, url: item.image });
+  }
 
-    return Promise.reject();
+  return Promise.reject();
 };

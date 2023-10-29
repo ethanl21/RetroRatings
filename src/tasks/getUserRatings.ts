@@ -3,7 +3,7 @@ import { auth, db } from "../config/firebase";
 
 export type UserRatings = {
   [itemId: string]: number;
-}
+};
 
 /**
  * @brief Gets a user's ratings

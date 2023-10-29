@@ -12,13 +12,13 @@ import DOMPurify from "dompurify";
 export const addRatingItem = async (
   itemName: string,
   description: string,
-  image: File
+  image: File,
 ) => {
   try {
     let result = null;
     if (auth.currentUser) {
       const imageName = DOMPurify.sanitize(
-        `${nanoid()}.${image.name.split(".").pop()}`
+        `${nanoid()}.${image.name.split(".").pop()}`,
       );
       const imageRef = ref(storage, `/rating-items-images/${imageName}`);
       result = await uploadBytes(imageRef, image);

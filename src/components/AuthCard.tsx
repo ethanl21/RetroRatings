@@ -46,7 +46,7 @@ export const AuthCard = ({ ...props }: AuthProps) => {
     //formState: { errors },
   } = useForm<BasicEmailFormInput>();
   const onBasicLoginFormSubmit: SubmitHandler<BasicEmailFormInput> = async (
-    data
+    data,
   ) => {
     if (props.actionType === "signup") {
       await createUserWithEmailAndPassword(data.email, data.password);
@@ -97,7 +97,7 @@ export const AuthCard = ({ ...props }: AuthProps) => {
     useSignInWithGoogle(fAuth);
   const [signInWithGitHub, githubUser, githubLoading, githubError] =
     useSignInWithGithub(fAuth);
-  
+
   const [authState, authStateLoading, authStateError] = useAuthState(fAuth);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -110,10 +110,10 @@ export const AuthCard = ({ ...props }: AuthProps) => {
 
   const cb = props.onAuthenticated;
   useEffect(() => {
-    if(authState && cb){
+    if (authState && cb) {
       cb();
     }
-  }, [authState, cb])
+  }, [authState, cb]);
 
   return (
     <>

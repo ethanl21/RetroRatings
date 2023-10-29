@@ -78,7 +78,7 @@ export const setRating = async (ratingItemId: string, ratingValue: number) => {
       await setDoc(
         userRatingsRef,
         { [ratingItemId]: ratingValue },
-        { merge: true }
+        { merge: true },
       );
 
       // calculate the new average rating

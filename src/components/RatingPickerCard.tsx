@@ -5,7 +5,6 @@ import { Rating } from "react-simple-star-rating";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
 
-
 interface RatingPickerCardProps {
   id: string;
   name: string;
@@ -14,7 +13,7 @@ interface RatingPickerCardProps {
   rating: number;
   OnRatingChanged: (
     id: string,
-    rating: number
+    rating: number,
   ) => Promise<void | FirebaseError>;
 }
 

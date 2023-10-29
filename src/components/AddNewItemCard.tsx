@@ -23,7 +23,7 @@ type AddNewItemFormInput = {
 type OnFormSubmitHandlerType = (
   item: string,
   description: string,
-  image: File
+  image: File,
 ) => Promise<void | FirebaseError>;
 
 /**
@@ -49,7 +49,7 @@ export const AddNewItemCard = (props: AddNewItemCardProps) => {
 
   // Function called when the form is submitted
   const onAddNewItemFormSubmit: SubmitHandler<AddNewItemFormInput> = async (
-    data
+    data,
   ) => {
     // call the callback handler from props if it exists
     if (props.OnFormSubmit) {
@@ -57,7 +57,7 @@ export const AddNewItemCard = (props: AddNewItemCardProps) => {
         .OnFormSubmit(
           DOMPurify.sanitize(data.itemName),
           DOMPurify.sanitize(data.description),
-          data.image[0]
+          data.image[0],
         )
         .then(() => {
           setModalHeader("Success");

@@ -17,7 +17,7 @@ import { ProfilePage } from "./components/ProfilePage";
 
 function App() {
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
-    "signin"
+    "signin",
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -137,7 +137,7 @@ function App() {
               onClick={() => {
                 if (auth) {
                   alert(
-                    'You\'re already logged in!\n(Sign out in the "Profile" tab)'
+                    'You\'re already logged in!\n(Sign out in the "Profile" tab)',
                   );
                 } else {
                   openModal();
