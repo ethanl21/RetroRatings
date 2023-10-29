@@ -1,11 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PropsWithChildren, useState } from "react";
-import { auth, googleProvider, githubProvider } from "../config/firebase";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  //fetchSignInMethodsForEmail, // todo: validate email does not exist
-  signInWithPopup,
-} from "firebase/auth";
+import { auth as fAuth } from "../config/firebase";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Card from "react-bootstrap/Card";
@@ -23,7 +18,12 @@ import {
   BsLockFill,
 } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
-import { FirebaseError } from "firebase/app";
+import {
+  useCreateUserWithEmailAndPassword,
+  useSignInWithEmailAndPassword,
+  useSignInWithGithub,
+  useSignInWithGoogle,
+} from "react-firebase-hooks/auth";
 
 type BasicEmailFormInput = {
   email: string;
@@ -45,51 +45,61 @@ export const AuthCard = ({ ...props }: AuthProps) => {
   const onBasicLoginFormSubmit: SubmitHandler<BasicEmailFormInput> = async (
     data
   ) => {
-    try {
-      if (props.actionType === "signup") {
-        await createUserWithEmailAndPassword(auth, data.email, data.password);
-      } else if (props.actionType === "signin") {
-        await signInWithEmailAndPassword(auth, data.email, data.password);
-      }
+    if (props.actionType === "signup") {
+      await createUserWithEmailAndPassword(data.email, data.password);
 
-      reset();
-    } catch (err) {
-      console.error(err);
-
-      if (err instanceof FirebaseError) {
-        switch (err.code) {
+      if (createEmailError) {
+        switch (createEmailError.code) {
           case "auth/email-already-in-use":
             alert("There is already an account with that email address.");
             break;
+          default:
+            alert(createEmailError);
+            break;
+        }
+      }
+    } else if (props.actionType === "signin") {
+      await signInWithEmailAndPassword(data.email, data.password);
+
+      if (signInEmailError) {
+        switch (signInEmailError.code) {
           case "auth/invalid-login-credentials":
             alert("Incorrect email or password.");
+            break;
+          default:
+            alert(JSON.stringify(createEmailError));
             break;
         }
       }
     }
-  };
 
-  const signInWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (err) {
-      console.error(err);
+    if (!createEmailError && !signInEmailError) {
+      reset();
     }
   };
 
-  const signInWithGitHub = async () => {
-    try {
-      await signInWithPopup(auth, githubProvider);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [
+    createUserWithEmailAndPassword,
+    createEmailUser,
+    createEmailLoading,
+    createEmailError,
+  ] = useCreateUserWithEmailAndPassword(fAuth);
+  const [
+    signInWithEmailAndPassword,
+    signInEmailUser,
+    signInEmailLoading,
+    signInEmailError,
+  ] = useSignInWithEmailAndPassword(fAuth);
+  const [signInWithGoogle, googleUser, googleLoading, googleError] =
+    useSignInWithGoogle(fAuth);
+  const [signInWithGitHub, githubUser, githubLoading, githubError] =
+    useSignInWithGithub(fAuth);
 
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <>
-      <Card className={props.noBorder? "border-0" : ""}>
+      <Card className={props.noBorder ? "border-0" : ""}>
         <Card.Body>
           <span hidden={props.noBorder}>
             <Card.Title>
@@ -111,6 +121,7 @@ export const AuthCard = ({ ...props }: AuthProps) => {
                   type="email"
                   placeholder="Email"
                   {...register("email")}
+                  required
                 />
               </InputGroup>
             </Form.Group>
@@ -125,6 +136,7 @@ export const AuthCard = ({ ...props }: AuthProps) => {
                   type={showPassword ? "text" : "password"}
                   placeholder="********"
                   {...register("password")}
+                  required
                 />
 
                 <ToggleButton
@@ -166,14 +178,14 @@ export const AuthCard = ({ ...props }: AuthProps) => {
             <Button
               className="flex-grow-1"
               variant="outline-secondary"
-              onClick={signInWithGoogle}
+              onClick={() => signInWithGoogle().then().catch()}
               style={{ background: "white", color: "#757575" }}
             >
               <FcGoogle />
             </Button>
             <Button
               className="flex-grow-1"
-              onClick={signInWithGitHub}
+              onClick={() => signInWithGitHub().then().catch()}
               style={{ background: "#333333" }}
             >
               <BsGithub />

@@ -1,30 +1,42 @@
 import { useState } from "react";
-import { signOut } from "firebase/auth";
-import { AuthCard } from "./components/AuthCard";
-import { auth } from "./config/firebase";
-// import { AddNewItemCard } from "./components/AddNewItemCard";
-// import { addRatingItem } from "./tasks/addItem";
+import { auth as fAuth } from "./config/firebase";
+import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 
 import Button from "react-bootstrap/Button";
-// import Stack from "react-bootstrap/Stack"; // Not used
-
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-
 import Modal from "react-bootstrap/Modal";
-import { RatingPickerCard } from "./components/RatingPickerCard";
+
 import { RatingItem, getRatingItem } from "./tasks/getRatingItems";
 import { getUserRating } from "./tasks/getUserRatings";
 import { setRating } from "./tasks/setRating";
+
+import { AuthCard } from "./components/AuthCard";
+import { RatingPickerCard } from "./components/RatingPickerCard";
+import { ProfilePage } from "./components/ProfilePage";
 
 function App() {
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
     "signin"
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [auth, authLoading, authError] = useAuthState(fAuth);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [signOut, signoutLoading, signoutError] = useSignOut(fAuth);
+
   const logoutUser = async () => {
     try {
-      await signOut(auth);
+      if (auth) {
+        await signOut();
+        if (signoutError) {
+          alert(signoutError);
+        } else {
+          alert("You've been signed out.");
+        }
+      } else {
+        alert("you're not signed in!");
+      }
     } catch (err) {
       console.error(err);
     }
@@ -41,11 +53,11 @@ function App() {
 
   const debugId = "TmrDzWYpbZAhhHy8TUSv";
   const getDebugRatingItem = async () => {
-    if (auth.currentUser) {
+    if (auth) {
       setRatingItem(await getRatingItem(debugId));
 
       try {
-        const dbgRating = await getUserRating(auth.currentUser.uid, debugId);
+        const dbgRating = await getUserRating(auth?.uid, debugId);
         setDemoRating(dbgRating);
       } catch (err) {
         setDemoRating(0);
@@ -92,11 +104,9 @@ function App() {
                 <Button onClick={logoutUser}>Sign Out</Button>
                 <Button
                   onClick={() =>
-                    alert(
-                      auth.currentUser?.email
-                        ? auth.currentUser?.email
-                        : "You're not logged in!"
-                    )
+                    {console.log(JSON.stringify(auth));
+                    alert(auth?.displayName ? auth.displayName : "You're not logged in!");
+                  }
                   }
                 >
                   Who am I?
@@ -121,6 +131,10 @@ function App() {
               }
             />
           )}
+        </Tab>
+
+        <Tab eventKey="profile" title="Profile" disabled={!auth}>
+          <ProfilePage />
         </Tab>
       </Tabs>
     </>
