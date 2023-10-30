@@ -38,7 +38,7 @@ function App() {
               <Row>
                 <Col>
                   <h1>Welcome to RetroRatings!</h1>
-                  <p>Sign up or Log in to continue.</p>
+                  <p>Sign up or Log in to start rating nostalgic items from the past!</p>
                 </Col>
                 <Col>
                   <AuthCard
