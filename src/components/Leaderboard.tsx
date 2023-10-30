@@ -13,7 +13,6 @@ import {
   BsFillHandThumbsDownFill,
   BsFillHandThumbsUpFill,
 } from "react-icons/bs";
-import { FirebaseImage } from "./FirebaseImage";
 import Container from "react-bootstrap/Container";
 
 const getTableBody = (items: Array<RatingItem>) => {
@@ -22,9 +21,6 @@ const getTableBody = (items: Array<RatingItem>) => {
       <tr key={nanoid()}>
         <td>{idx + 1}</td>
         <td>{val.name}</td>
-        <td>
-          <FirebaseImage src={val.image} thumbnail width="100" />
-        </td>
         <td>{val.averageRating} ★</td>
       </tr>
     );
@@ -77,7 +73,6 @@ export const Leaderboard = () => {
             <tr>
               <td>#</td>
               <td>Name</td>
-              <td>Image</td>
               <td>Average Rating</td>
             </tr>
           </thead>
