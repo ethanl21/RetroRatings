@@ -69,11 +69,6 @@ function App() {
         >
           <Leaderboard />
         </Tab>
-
-        {/* Tab used to upload new images
-        <Tab eventKey="uploadItem" title="Upload">
-          <AddNewItemCard OnFormSubmit={addRatingItem} />
-        </Tab> */}
       </Tabs>
     </>
   );
