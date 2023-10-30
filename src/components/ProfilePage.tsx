@@ -18,6 +18,9 @@ import { getRatingItemImage } from "../tasks/getRatingItems";
 
 import { TierList } from "./TierList";
 
+import { addRatingItem } from "../tasks/addItem";
+import { AddNewItemCard } from "./AddNewItemCard";
+
 function getTierListItems(ids: Array<string>) {
   const promises: Array<Promise<{ id: string; url: string }>> = [];
 
@@ -148,6 +151,9 @@ export const ProfilePage = ({ ...props }: ProfilePageProps) => {
               <Button variant="danger" onClick={() => onSignOut()}>
                 Sign Out
               </Button>
+            </div>
+            <div className="py-2 d-flex justify-content-center gap-2">
+              <AddNewItemCard OnFormSubmit={addRatingItem} />
             </div>
           </Col>
         </Row>

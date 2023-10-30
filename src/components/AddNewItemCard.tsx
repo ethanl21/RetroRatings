@@ -98,7 +98,7 @@ export const AddNewItemCard = (props: AddNewItemCardProps) => {
         </Modal.Footer>
       </Modal>
 
-      <Card className="w-50">
+      <Card>
         <Card.Body>
           <Card.Title>Add New Item</Card.Title>
           <hr />
@@ -120,7 +120,7 @@ export const AddNewItemCard = (props: AddNewItemCardProps) => {
               <Form.Control
                 required
                 as="textarea"
-                rows={5}
+                rows={4}
                 {...register("description", {})}
               />
             </Form.Group>

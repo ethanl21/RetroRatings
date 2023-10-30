@@ -24,9 +24,6 @@ export const HomePage = () => {
   /* eslint-disable */
   var [itemIndex, setItemIndex] = useState(0);
 
-  type Arr = {
-    arr: String[];
-  };
   var [entryKeys, setEntryKeys] = useState<Array<string>>([]);
 
   const numOfItems = 100; // Using 100 because it is more than what is in the database
@@ -102,12 +99,12 @@ export const HomePage = () => {
 
       <div className="d-flex justify-content-center" style={{ padding: 20 }}>
         <div style={{ padding: 30 }}>
-          <Button onClick={prev} size="lg">
+          <Button onClick={prev} hidden ={!isRating} size="lg">
             Prev
           </Button>
         </div>
         <div style={{ padding: 30 }}>
-          <Button onClick={next} size="lg">
+          <Button onClick={next} hidden ={!isRating} size="lg">
             Next
           </Button>
         </div>
