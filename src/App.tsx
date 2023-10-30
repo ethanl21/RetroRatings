@@ -45,7 +45,7 @@ function App() {
   type Arr = {
     arr : String []
   }
-  var [entryKeys, setEntryKeys] = useState<Object | null>([""]);
+  var [entryKeys, setEntryKeys] = useState<Array<string>>([]);
 
   const numOfItems = 100; // Using 100 because it is more than what is in the database
 
@@ -130,13 +130,13 @@ function App() {
 
   // const debugId = "TmrDzWYpbZAhhHy8TUSv";
 
-  const debugId = String(entryKeys[Number(itemIndex)]);
+  const debugId = String(entryKeys[itemIndex]);
   // console.log(debugId);
   async function getDebugRatingItem() {
     if (auth) {
       // console.log("rendering new item");
       // console.log(debugId);
-      setRatingItem(await getRatingItem(String(entryKeys[String(itemIndex)])));
+      setRatingItem(await getRatingItem(entryKeys[itemIndex]));
       try {
         const dbgRating = await getUserRating(auth.uid, debugId);
         setDemoRating(dbgRating);
