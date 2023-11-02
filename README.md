@@ -1,6 +1,11 @@
 # RetroRatings
 
+![Firebase Hosting Deploy Status](https://img.shields.io/github/actions/workflow/status/ethanl21/RetroRatings/firebase-hosting-merge.yml)
+![GitHub](https://img.shields.io/github/license/ethanl21/RetroRatings)
+
 RetroRatings is a website used to rate nostalgic things from the 90s and 2000s.
+
+![RetroRatings homepage screenshot](.github/assets/homepage%20screenshot.png)
 
 ## Features
 
@@ -13,7 +18,7 @@ RetroRatings is a website used to rate nostalgic things from the 90s and 2000s.
 
 RetroRatings is deployed via Firebase Hosting. It can be accessed at [retroratings.web.app](https://retroratings.web.app).
 
-To deploy your own instance of RetroRatings, clone this repository and replace the Firebase config data located in `src/config/firebase.ts`. Running RetroRatings requires Firebase Authentication, Firestore Database, and Firebase Cloud Storage to be correctly configured:
+To deploy your own instance of RetroRatings, clone this repository and replace the Firebase config data located in `src/config/firebase.ts`. Running RetroRatings requires Firebase Authentication, Firestore Database, Firebase Cloud Storage, and App Check to be correctly configured:
 
 - Firebase Authentication
   - The `Email/Password`, `Google`, and `GitHub` providers should be enabled.
@@ -23,6 +28,12 @@ To deploy your own instance of RetroRatings, clone this repository and replace t
   - A folder named `rating-items-images` should be configured.
 - Firebase Hosting
   - A GitHub actions deploy workflow is included to allow GitHub actions to deploy directly to Firebase Hosting. A repository secret named `FIREBASE_SERVICE_ACCOUNT_RETRORATINGS` must be set in order to use this.
+- App Check
+  - [Configure App Check](https://firebase.google.com/docs/app-check/web/recaptcha-provider).
+  - To test locally, [configure debug mode](https://firebase.google.com/docs/app-check/web/debug-provider) and add a `.env.development.local` file to the root of this repository with the following contents:
+  ```
+  VITE_APP_CHECK_DEBUG_KEY="app check debug key here"
+  ```
 
 For additional documentation on the back-end API, see [API.md](docs/API.md).
 
