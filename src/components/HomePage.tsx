@@ -1,7 +1,7 @@
 import Button from "react-bootstrap/Button";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth as fAuth } from "../config/firebase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { setRating } from "../tasks/setRating";
 import { RatingPickerCard } from "./RatingPickerCard";
 import {
@@ -28,11 +28,13 @@ export const HomePage = () => {
 
   const numOfItems = 100; // Using 100 because it is more than what is in the database
 
-  getRatingItems(numOfItems).then(async (values) => {
-    var keys = Object.keys(values);
-    // console.log(keys);
-    setEntryKeys(keys);
-  });
+  useEffect(() => {
+    getRatingItems(numOfItems).then(async (values) => {
+      var keys = Object.keys(values);
+      // console.log(keys);
+      setEntryKeys(keys);
+    });
+  }, [auth]);
 
   const debugId = entryKeys[itemIndex];
   // console.log(debugId);
@@ -99,12 +101,12 @@ export const HomePage = () => {
 
       <div className="d-flex justify-content-center" style={{ padding: 20 }}>
         <div style={{ padding: 30 }}>
-          <Button onClick={prev} hidden ={!isRating} size="lg">
+          <Button onClick={prev} hidden={!isRating} size="lg">
             Prev
           </Button>
         </div>
         <div style={{ padding: 30 }}>
-          <Button onClick={next} hidden ={!isRating} size="lg">
+          <Button onClick={next} hidden={!isRating} size="lg">
             Next
           </Button>
         </div>
