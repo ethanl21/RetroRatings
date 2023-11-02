@@ -2,8 +2,6 @@
 
 RetroRatings is a website used to rate nostalgic things from the 90s and 2000s.
 
-(todo insert screenshot when home page is finalized)
-
 ## Features
 
 - Rating nostalgic items from 0-5 stars
@@ -41,7 +39,7 @@ npm run dev
 
 RetroRatings is developed and maintained by the following individuals:
 
-- Alan Cortes [@Nalluh](https://github.com/Nalluh)
+- Allan Cortes [@Nalluh](https://github.com/Nalluh)
 - Raquel Cruz [@rlcruz324](https://github.com/rlcruz324)
 - Jose Gonzalez [@jose-gonzalez1](https://github.com/jose-gonzalez1)
 - Ethan Lew [@ethanl21](https://github.com/ethanl21)
