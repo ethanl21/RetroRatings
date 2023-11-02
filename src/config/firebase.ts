@@ -20,13 +20,14 @@ const app = initializeApp(firebaseConfig);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(<any> window).FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.VITE_APP_CHECK_DEBUG_KEY;
+(<any>window).FIREBASE_APPCHECK_DEBUG_TOKEN =
+  import.meta.env.VITE_APP_CHECK_DEBUG_KEY;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const appCheck = initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider("6LevGO0oAAAAAK9WEnnpfmIfI3IAJpmyUF-y3qRL"),
-  isTokenAutoRefreshEnabled: true
-})
+  isTokenAutoRefreshEnabled: true,
+});
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);

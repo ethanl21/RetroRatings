@@ -15,7 +15,7 @@ function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [auth, authLoading, authError] = useAuthState(fAuth);
   const [authActionType, setAuthActionType] = useState<"signup" | "signin">(
-    "signup"
+    "signup",
   );
 
   const [activeTabKey, setActiveTabKey] = useState("home");
@@ -38,7 +38,10 @@ function App() {
               <Row>
                 <Col>
                   <h1>Welcome to RetroRatings!</h1>
-                  <p>Sign up or Log in to start rating nostalgic items from the past!</p>
+                  <p>
+                    Sign up or Log in to start rating nostalgic items from the
+                    past!
+                  </p>
                 </Col>
                 <Col>
                   <AuthCard
